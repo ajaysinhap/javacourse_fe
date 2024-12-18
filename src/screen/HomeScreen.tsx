@@ -5,7 +5,7 @@ const HomeScreen = () => {
   const [selectedModule, setSelectedModule] = useState(null);
   const IntroductionJavaScript = require('../asset/IntroductionJavaScript.png')
   const ObjectOrientedJavaScript = require('../asset/ObjectOrientedJavaScript.jpg')
-  const FunctionsScope = require('../asset/FunctionsScope.jpg')
+  const FunctionsScope = require('../asset/FunctionsScope.png')
   const VariablesDataTypes = require('../asset/VariablesDataTypes.jpg')
   const UnderstandigVuejs = require('../asset/UnderstandigVuejs.jpg')
   const PromisesAndsimplifiedEasy = require('../asset/PromisesAndsimplifiedEasy.jpg')
