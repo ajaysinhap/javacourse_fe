@@ -22,7 +22,7 @@ const Header: React.FC<HeaderProps> = ({ openSidebar }) => {
         <TouchableOpacity onPress={handleSidebarToggle}>
           <Icon name="menu" size={30} color="#2c3e50" />
         </TouchableOpacity>
-        <Text style={styles.title}>JavaScript</Text>
+        <Text style={styles.title}>Java</Text>
         <Avatar
           rounded
           source={{

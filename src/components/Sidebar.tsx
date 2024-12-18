@@ -69,7 +69,7 @@ const { height: screenHeight } = Dimensions.get('window');
 const styles = StyleSheet.create({
   sidebar: {
     position: 'absolute',
-    width: 250,
+    width: 300,
     zIndex: 999,
     backgroundColor: '#2c3e50',
     paddingVertical: 20,
@@ -88,12 +88,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     fontSize: 30,
     color: '#FFFFFF',
-    paddingVertical: 10,
+    paddingVertical: 15,
     paddingHorizontal: 15,
   },
   menuText: {
     color: 'white',
-    fontSize: 25,
+    fontSize: 18,
     marginLeft: 10,
     fontFamily: 'lucida grande',
     cursor: 'pointer',

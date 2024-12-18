@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NavigationContainer, createNavigationContainerRef } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { View, Text } from 'react-native';
+import { View, Text, Dimensions } from 'react-native';
 import HomeScreen from './src/screen/HomeScreen';
 import Header from './src/components/Header';
 import Sidebar from './src/components/Sidebar';
@@ -10,6 +10,7 @@ import SettingsScreen from './src/screen/Settings';
 import introductionScreen from './src/screen/introduction';
 import Footer from './src/components/footer';
 import javascriptScreen from './src/screen/javascriptDetails';
+import RenderHTML from 'react-native-render-html';
 
 type Chapter = {
   id: number;
@@ -80,6 +81,7 @@ const App: React.FC = () => {
       navigationRef.navigate('chapterDetails', { chapterId: id }); // Navigate with chapterId
     }
   };
+  const contentWidth = Dimensions.get('window').width;
 
   return (
     <NavigationContainer ref={navigationRef}>
@@ -91,7 +93,6 @@ const App: React.FC = () => {
       />
       <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Home" component={HomeScreen} />
-        
         <Stack.Screen name="chapterDetails">
           {({ route }) => {
             const { chapterId } = route.params;
@@ -100,8 +101,12 @@ const App: React.FC = () => {
             return (
               chapter && (
                 <View>
-                  <Text>{chapter.chapterName}</Text>
-                  <Text>{chapter.content}</Text>
+                  <Text>
+                  {chapter.chapterName}
+                  </Text>
+                  <Text>
+                  <RenderHTML contentWidth={contentWidth} source={{ html: chapter.content }} />                
+                  </Text>
                 </View>
               )
             );
