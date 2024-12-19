@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer, createNavigationContainerRef } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { View, Text, Dimensions } from 'react-native';
+import { View, Text, Dimensions, Alert } from 'react-native';
 import HomeScreen from './src/screen/HomeScreen';
 import Header from './src/components/Header';
 import Sidebar from './src/components/Sidebar';
@@ -11,61 +11,24 @@ import introductionScreen from './src/screen/introduction';
 import Footer from './src/components/footer';
 import javascriptScreen from './src/screen/javascriptDetails';
 import RenderHTML from 'react-native-render-html';
+import { db } from './firebaseConfig';
+import { collection, getDocs } from 'firebase/firestore';
 
 type Chapter = {
   id: number;
-  chapterName: string;
-  content: string;
- 
+  chapterName: any;
+  content: any;
 };
 
-const chapters: Chapter[] = [
-  {
-    id: 1,
-    chapterName: "Introduction to Java",
-    content: "<h1>Introduction to Java</h1><p>Java is a high-level, class-based, object-oriented programming language...</p>",
-   
-  },
-  {
-    id: 2,
-    chapterName: "Data Types and Variables",
-    content: "<h1>Data Types and Variables</h1><p>Java supports various data types such as int, float, char, and more...</p>",
-   
-  },
-  {
-    id: 3,
-    chapterName: "Control Flow Statements",
-    content: "<h1>Control Flow Statements</h1><p>Java provides control flow statements like if-else, switch, loops, and more...</p>",
-    
-  },
-  {
-    id: 4,
-    chapterName: "Object-Oriented Programming",
-    content: "<h1>Object-Oriented Programming</h1><p>OOP concepts in Java include classes, objects, inheritance, polymorphism...</p>",
-    
-  },
-  {
-    id: 5,
-    chapterName: "Exception Handling",
-    content: "<h1>Exception Handling</h1><p>Exception handling in Java is achieved using try-catch blocks...</p>",
-    
-  }
-];
+const contentWidth = Dimensions.get('window').width;
 
-type RootStackParamList = {
-  Home: undefined;
-  introduction: undefined;
-  Profile: undefined;
-  Settings: undefined;
-  javascriptScreen: undefined;
-  chapterDetails: { chapterId: number };
-};
-
-const Stack = createStackNavigator<RootStackParamList>();
+const Stack = createStackNavigator();
 
 const App: React.FC = () => {
   const navigationRef = createNavigationContainerRef();
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+  const [chapters, setChapters] = useState<Chapter[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const openSidebar = () => {
     setIsSidebarOpen(true);
@@ -75,13 +38,34 @@ const App: React.FC = () => {
     setIsSidebarOpen(false);
   };
 
-  const handleSelectChapter = (id: number) => {
+
+  // Fetch chapters from Firestore
+  useEffect(() => {
+    const fetchChapters = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "Chapter"));
+        const fetchedChapters = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          
+        }));
+        setChapters(fetchedChapters);
+      } catch (error) {
+        console.error("Error fetching chapters: ", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchChapters();
+  }, []);
+
+  const handleSelectChapter = (id: string) => {
     closeSidebar();
     if (navigationRef.isReady()) {
       navigationRef.navigate('chapterDetails', { chapterId: id }); // Navigate with chapterId
     }
   };
-  const contentWidth = Dimensions.get('window').width;
 
   return (
     <NavigationContainer ref={navigationRef}>
@@ -96,18 +80,15 @@ const App: React.FC = () => {
         <Stack.Screen name="chapterDetails">
           {({ route }) => {
             const { chapterId } = route.params;
-            // Ensure 'chapter' is typed correctly
-            const chapter = chapters.find((chapter: Chapter) => chapter.id === chapterId);
+            const chapter = chapters.find((chapter) => chapter.id === chapterId);
             return (
-              chapter && (
+              chapter ? (
                 <View>
-                  <Text>
-                  {chapter.chapterName}
-                  </Text>
-                  <Text>
-                  <RenderHTML contentWidth={contentWidth} source={{ html: chapter.content }} />                
-                  </Text>
+                  <Text>{chapter.chapterName}</Text>
+                  <RenderHTML contentWidth={contentWidth} source={{ html: chapter.content }} />
                 </View>
+              ) : (
+                <Text>Chapter not found</Text>
               )
             );
           }}

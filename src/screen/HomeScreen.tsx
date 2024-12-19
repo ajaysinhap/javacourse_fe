@@ -3,53 +3,51 @@ import { View, Text, StyleSheet, Button, ScrollView, TouchableOpacity, Image } f
 
 const HomeScreen = () => {
   const [selectedModule, setSelectedModule] = useState(null);
-  const IntroductionJavaScript = require('../asset/IntroductionJavaScript.png')
-  const ObjectOrientedJavaScript = require('../asset/ObjectOrientedJavaScript.jpg')
-  const FunctionsScope = require('../asset/FunctionsScope.png')
-  const VariablesDataTypes = require('../asset/VariablesDataTypes.jpg')
-  const UnderstandigVuejs = require('../asset/UnderstandigVuejs.jpg')
-  const PromisesAndsimplifiedEasy = require('../asset/PromisesAndsimplifiedEasy.jpg')
+  const IntroductionToJava = require('../asset/image/IntroductionJavaScript.jpg')
+  const VariablesDataTypesJava = require('../asset/image/ObjectOrientedJavaScript.jpg')
+  const MethodsScopeJava = require('../asset/image/PromisesAndsimplifiedEasy.jpg')
+  const OOPJava = require('../asset/image/VariablesDataTypes.jpg')
+  const JavaExceptions = require('../asset/image/UnderstandigVuejs.png')
+  const JavaCollections = require('../asset/image/FunctionsScope.jpg')
   const courseModules = [
     {
       id: 1,
-      title: 'Introduction to JavaScript',
-      description: 'Learn the basics of JavaScript, including syntax, variables, and functions.',
-      imageUrl: IntroductionJavaScript,
+      title: 'Introduction to Java',
+      description: 'Learn the basics of Java, including syntax, variables, and data types.',
+      imageUrl: IntroductionToJava,
     },
     {
       id: 2,
-      title: 'Variables and Data Types',
-      description: 'Understand how to declare variables and use different data types in JavaScript.',
-      imageUrl: VariablesDataTypes,
-
+      title: 'Variables and Data Types in Java',
+      description: 'Understand how to declare variables and use different data types in Java.',
+      imageUrl: VariablesDataTypesJava,
     },
     {
       id: 3,
-      title: 'Functions and Scope',
-      description: 'Explore JavaScript functions, arguments, return values, and scope.',
-      imageUrl: FunctionsScope,
-
+      title: 'Methods and Scope in Java',
+      description: 'Explore Java methods, arguments, return values, and scope.',
+      imageUrl: MethodsScopeJava,
     },
     {
       id: 4,
-      title: 'Object-Oriented JavaScript',
-      description: 'Dive into objects, methods, and classes in JavaScript.',
-      imageUrl: ObjectOrientedJavaScript,
-
+      title: 'Object-Oriented Programming in Java',
+      description: 'Dive into classes, objects, inheritance, and polymorphism in Java.',
+      imageUrl: OOPJava,
     },
     {
       id: 5,
-      title: 'JavaScript promises andsimplified for Easy...',
-      description: 'Dive into objects, methods, and classes in JavaScript.',
-      imageUrl: PromisesAndsimplifiedEasy,
+      title: 'Java Exceptions and Error Handling',
+      description: 'Understand exception handling, try-catch blocks, and custom exceptions in Java.',
+      imageUrl: JavaExceptions,
     },
     {
       id: 6,
-      title: 'Understandig Vue,js ...',
-      description: 'Dive into objects, methods, and classes in JavaScript.',
-      imageUrl: UnderstandigVuejs,
+      title: 'Understanding Java Collections Framework',
+      description: 'Learn about Java collections, including List, Set, Map, and more.',
+      imageUrl: JavaCollections,
     },
   ];
+  
 
   const handleCardClick = (module:any) => {
     setSelectedModule(module);
@@ -58,8 +56,8 @@ const HomeScreen = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>JavaScript Course</Text>
-        <Text style={styles.subHeader}>Welcome to the JavaScript Learning Platform</Text>
+        <Text style={styles.headerText}>Java Course</Text>
+        <Text style={styles.subHeader}>Welcome to the Java Learning Platform</Text>
       </View>
 
       <View style={styles.section}>
