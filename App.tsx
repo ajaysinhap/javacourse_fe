@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer, createNavigationContainerRef } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { View, Text, Dimensions, Alert } from 'react-native';
+import { View, Text, Dimensions, Alert, ScrollView } from 'react-native';
 import HomeScreen from './src/screen/HomeScreen';
 import Header from './src/components/Header';
 import Sidebar from './src/components/Sidebar';
@@ -15,7 +15,7 @@ import { db } from './firebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
 
 type Chapter = {
-  id: number;
+  id: any;
   chapterName: any;
   content: any;
 };
@@ -43,7 +43,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const fetchChapters = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, "Chapter"));
+        const querySnapshot = await getDocs(collection(db, "chapters"));
         const fetchedChapters = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -83,10 +83,14 @@ const App: React.FC = () => {
             const chapter = chapters.find((chapter) => chapter.id === chapterId);
             return (
               chapter ? (
+                <ScrollView contentContainerStyle={{ padding: 16 }}>
                 <View>
-                  <Text>{chapter.chapterName}</Text>
+                  <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10 }}>
+                    {chapter.chapterName}
+                  </Text>
                   <RenderHTML contentWidth={contentWidth} source={{ html: chapter.content }} />
                 </View>
+              </ScrollView>
               ) : (
                 <Text>Chapter not found</Text>
               )
@@ -95,10 +99,6 @@ const App: React.FC = () => {
         </Stack.Screen>
       </Stack.Navigator>
 
-      <Footer
-        toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
-        onSelectScreen={handleSelectChapter} // Pass the new handler
-      />
     </NavigationContainer>
   );
 };

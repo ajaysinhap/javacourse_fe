@@ -18,7 +18,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar, onSelectScreen
   useEffect(() => {
     const fetchChapters = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, "Chapter"));
+        const querySnapshot = await getDocs(collection(db, "chapters"));
         const chaptersData: any[] = [];
         querySnapshot.forEach((doc) => {
           chaptersData.push({ id: doc.id, ...doc.data() });
