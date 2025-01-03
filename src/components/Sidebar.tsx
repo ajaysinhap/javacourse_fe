@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, ActivityIndicator, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { db } from '.././../firebaseConfig'; // Import Firestore
 import { collection, getDocs } from 'firebase/firestore';
@@ -11,27 +11,27 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar, onSelectScreen }) => {
-    // State to hold the chapters data and loading state
+  // State to hold the chapters data and loading state
   const [chapters, setChapters] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchChapters = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, "chapters"));
+        const querySnapshot = await getDocs(collection(db, "chapter"));
         const chaptersData: any[] = [];
         querySnapshot.forEach((doc) => {
           chaptersData.push({ id: doc.id, ...doc.data() });
         });
-        setChapters(chaptersData); 
+        setChapters(chaptersData);
       } catch (error) {
         console.error("Error fetching chapters data: ", error);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
 
-    fetchChapters(); 
+    fetchChapters();
   }, []);
 
   return (
@@ -41,11 +41,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar, onSelectScreen
           <TouchableOpacity onPress={toggleSidebar} style={styles.toggleButton}>
             <Icon name="close" size={24} color="#ecf0f1" />
           </TouchableOpacity>
-          
+
           {loading ? (
             <ActivityIndicator size="large" color="#fff" />
           ) : (
-            chapters.map((chapter) => (
+            <ScrollView style={styles.scrollView}>
+            {chapters.map((chapter) => (
               <TouchableOpacity
                 key={chapter.id}
                 onPress={() => onSelectScreen(chapter.id)}
@@ -53,7 +54,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar, onSelectScreen
               >
                 <Text style={styles.menuText}>{chapter.chapterName}</Text>
               </TouchableOpacity>
-            ))
+            ))}
+          </ScrollView>
           )}
         </>
       )}
@@ -61,14 +63,16 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar, onSelectScreen
   );
 };
 
-const { height: screenHeight } = Dimensions.get('window');
-
+const { height: screenHeight } = Dimensions.get('window')
 const styles = StyleSheet.create({
+  scrollView: {
+    maxHeight: '80%',
+  },  
   sidebar: {
     position: 'absolute',
     width: 300,
     zIndex: 999,
-    backgroundColor: '#2c3e50',
+    backgroundColor: '#2d3646',
     paddingVertical: 20,
     height: screenHeight,
   },
@@ -85,15 +89,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     fontSize: 30,
     color: '#FFFFFF',
-    paddingVertical: 15,
+    paddingVertical: 30,
     paddingHorizontal: 15,
+    borderBottomColor: 'grey',
+    borderBottomWidth: 2
   },
   menuText: {
     color: 'white',
-    fontSize: 18,
+    fontSize: 20,
     marginLeft: 10,
     fontFamily: 'lucida grande',
+    fontWeight: '600',
     cursor: 'pointer',
+    padding:5
   },
 });
 
