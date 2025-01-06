@@ -7,7 +7,7 @@ import Header from './src/components/Header';
 import Sidebar from './src/components/Sidebar';
 import RenderHTML from 'react-native-render-html';
 import { db } from './firebaseConfig';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 
 type Chapter = {
   id: string;
@@ -27,11 +27,15 @@ const App: React.FC = () => {
 
   const fetchChapters = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, 'chapters'));
+      const querySnapshot = await getDocs(
+        query(collection(db, 'chapters'), orderBy('index'))
+      );
+  
       const fetchedChapters = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       })) as Chapter[];
+  
       setChapters(fetchedChapters);
     } catch (error) {
       console.error('Error fetching chapters: ', error);
@@ -39,6 +43,7 @@ const App: React.FC = () => {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     fetchChapters();
