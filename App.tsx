@@ -8,6 +8,7 @@ import Sidebar from './src/components/Sidebar';
 import RenderHTML from 'react-native-render-html';
 import { db } from './firebaseConfig';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { Icon } from 'react-native-elements';
 
 type Chapter = {
   id: string;
@@ -30,20 +31,20 @@ const App: React.FC = () => {
       const querySnapshot = await getDocs(
         query(collection(db, 'chapters'), orderBy('index'))
       );
-  
+
       const fetchedChapters = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       })) as Chapter[];
-  
+
       setChapters(fetchedChapters);
+      
     } catch (error) {
       console.error('Error fetching chapters: ', error);
     } finally {
       setLoading(false);
     }
   };
-  
 
   useEffect(() => {
     fetchChapters();
@@ -57,10 +58,23 @@ const App: React.FC = () => {
         toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
       />
       <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home">
+        <Stack.Screen name="Home" options={{
+          title: 'Java',
+          headerTitleAlign: 'center',
+        }}>
           {() => <HomeScreen chapters={chapters} loading={loading} />}
         </Stack.Screen>
-        <Stack.Screen name="chapterDetails">
+        <Stack.Screen
+          name="chapterDetails"
+          options={({ route }) => {
+            const { chapterIndex } = route.params;
+            return {
+              title: chapters[chapterIndex]?.chapterName || 'Chapter Details',
+              headerTitleAlign: 'center',
+            };
+          }}
+        >
+
           {({ route, navigation }) => {
             const { chapterIndex } = route.params;
             const chapter = chapters[chapterIndex];
@@ -83,9 +97,21 @@ const App: React.FC = () => {
                   {chapter.chapterName}
                 </Text>
                 <RenderHTML contentWidth={contentWidth} source={{ html: chapter.content }} />
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
-                  <Button title="Previous" onPress={goToPreviousChapter} disabled={chapterIndex === 0} />
-                  <Button title="Next" onPress={goToNextChapter} disabled={chapterIndex === chapters.length - 1} />
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20, borderRadius: 30 }}>
+                  <Icon
+                    name="chevron-left"
+                    size={50}
+                    color="black" 
+                    onPress={goToPreviousChapter}
+                    disabled={chapterIndex === 0}
+                  />
+                  <Icon
+                    name="chevron-right"
+                    size={50}
+                    color="black" 
+                    onPress={goToNextChapter}
+                    disabled={chapterIndex === chapters.length - 1}
+                  />
                 </View>
               </ScrollView>
             ) : (
@@ -99,3 +125,10 @@ const App: React.FC = () => {
 };
 
 export default App;
+
+
+
+
+
+
+

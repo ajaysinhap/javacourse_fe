@@ -37,6 +37,7 @@ const Header: React.FC<HeaderProps> = ({ openSidebar }) => {
 const styles = StyleSheet.create({
   mainHeader:{
     backgroundColor: 'grey',
+    display:'none'
     
   },
   header: {
