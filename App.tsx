@@ -1,17 +1,19 @@
+
+
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer, createNavigationContainerRef } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { View, Text, ScrollView, Dimensions, Button } from 'react-native';
+import { View, Text, ScrollView, Dimensions } from 'react-native';
 import HomeScreen from './src/screen/HomeScreen';
 import Header from './src/components/Header';
 import Sidebar from './src/components/Sidebar';
 import RenderHTML from 'react-native-render-html';
-import { db } from './firebaseConfig';
-import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { db,COURSE_ID } from './firebaseConfig';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { Icon } from 'react-native-elements';
 
 type Chapter = {
-  id: string;
+  courseId: string;
   chapterName: string;
   content: string;
   image: string;
@@ -28,17 +30,25 @@ const App: React.FC = () => {
 
   const fetchChapters = async () => {
     try {
-      const querySnapshot = await getDocs(
-        query(collection(db, 'chapters'), orderBy('index'))
+      const courseId = COURSE_ID;
+
+      const chaptersQuery = query(
+        collection(db, 'chapters'),
+        where('courseId', '==', courseId)
       );
 
+      const querySnapshot = await getDocs(chaptersQuery);
+
       const fetchedChapters = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
+        courseId: doc.id,
         ...doc.data(),
       })) as Chapter[];
 
-      setChapters(fetchedChapters);
-      
+      if (fetchedChapters.length > 0) {
+        setChapters(fetchedChapters);
+      } else {
+        console.log('No chapters found for this courseId');
+      }
     } catch (error) {
       console.error('Error fetching chapters: ', error);
     } finally {
@@ -74,7 +84,6 @@ const App: React.FC = () => {
             };
           }}
         >
-
           {({ route, navigation }) => {
             const { chapterIndex } = route.params;
             const chapter = chapters[chapterIndex];
@@ -101,14 +110,14 @@ const App: React.FC = () => {
                   <Icon
                     name="chevron-left"
                     size={50}
-                    color="black" 
+                    color="black"
                     onPress={goToPreviousChapter}
                     disabled={chapterIndex === 0}
                   />
                   <Icon
                     name="chevron-right"
                     size={50}
-                    color="black" 
+                    color="black"
                     onPress={goToNextChapter}
                     disabled={chapterIndex === chapters.length - 1}
                   />
@@ -125,10 +134,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-
-
-
-
-
-
-
