@@ -119,14 +119,53 @@ const App: React.FC = () => {
                           >
                             {chapter.chapterName}
                           </Text>
-                          <RenderHTML contentWidth={contentWidth} source={{ html: chapter.content }} />
+                          <RenderHTML
+                            contentWidth={contentWidth}
+                            source={{ html: chapter.content }}
+                            tagsStyles={{
+                              code: {
+                                backgroundColor: '#f4f4f4', // Light background for <code>
+                                color: 'black', // Text color in <code>
+                                fontFamily: 'monospace',
+                                padding: 5,
+                                borderRadius: 5,
+                                fontSize: 16,
+                              },
+                              pre: {
+                                backgroundColor: '#000', // Black background for <pre>
+                                color: '#fff', // White text for better readability
+                                padding: 10,
+                                borderRadius: 5,
+                                fontFamily: 'monospace',
+                                fontSize: 16, // Adjust font size for better readability
+                                marginBottom: 20, // Add spacing after the code block
+                              },
+                              h2: {
+                                fontSize: 22,
+                                fontWeight: 'bold',
+                                marginVertical: 10,
+                              },
+                              h3: {
+                                fontSize: 20,
+                                fontWeight: 'bold',
+                                marginVertical: 8,
+                              },
+                              a: {
+                                color: 'black', // Link color
+                                backgroundColor: '#E7E9EB',
+                                padding: 5,
+                                borderRadius: 5,
+                              },
+                            }}
+                          />
+
                         </ScrollView>
                         {/* Footer with Next Icon */}
                         <View style={styles.footer}>
                           <Icon
                             name="chevron-left"
                             size={50}
-                            color={chapterIndex > 0 ? 'black' : '#ddd'} 
+                            color={chapterIndex > 0 ? 'black' : '#ddd'}
                             onPress={() =>
                               chapterIndex > 0 &&
                               navigation.navigate('chapterDetails', {
@@ -164,17 +203,12 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#f8f8f8',
     padding: 10,
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    alignItems: 'center', 
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     borderTopWidth: 1,
     borderColor: '#ddd',
   },
 });
 
 export default App;
-
-
-
-
-
