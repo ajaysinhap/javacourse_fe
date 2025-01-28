@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer, createNavigationContainerRef } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { View, Text, ScrollView, Dimensions, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, Dimensions, StyleSheet, Alert } from 'react-native';
 import HomeScreen from './src/screen/HomeScreen';
 import Header from './src/components/Header';
 import Sidebar from './src/components/Sidebar';
@@ -10,6 +10,7 @@ import { db, COURSE_ID } from './firebaseConfig';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { Icon } from 'react-native-elements';
 import SplashScreen from './src/components/splashScreen';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 type Chapter = {
   courseId: string;
@@ -20,6 +21,12 @@ type Chapter = {
 
 const contentWidth = Dimensions.get('window').width;
 const Stack = createStackNavigator();
+
+// Function to copy text to clipboard
+const copyToClipboard = (text: string) => {
+  Clipboard.setString(text);
+  Alert.alert('Copied to Clipboard', 'The code snippet has been copied!');
+};
 
 const App: React.FC = () => {
   const navigationRef = createNavigationContainerRef();
@@ -157,8 +164,28 @@ const App: React.FC = () => {
                                 borderRadius: 5,
                               },
                             }}
+                            renderers={{
+                              pre: ({ TDefaultRenderer, ...props }) => {
+                                // Extract the code text from the <pre> tag
+                                const codeText = props.tnode?.domNode?.children?.[0]?.data || '';
+                                return (
+                                  <View style={{ position: 'relative' }}>
+                                    {/* Default renderer for <pre> */}
+                                    <TDefaultRenderer {...props} />
+                                    {/* Copy icon in the top-right corner */}
+                                    <Icon
+                                      name="content-copy"
+                                      type="material"
+                                      size={20}
+                                      color="#fff"
+                                      containerStyle={styles.copyIcon}
+                                      onPress={() => copyToClipboard(codeText)}
+                                    />
+                                  </View>
+                                );
+                              },
+                            }}
                           />
-
                         </ScrollView>
                         {/* Footer with Next Icon */}
                         <View style={styles.footer}>
@@ -209,6 +236,36 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: '#ddd',
   },
+  copyIcon: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    backgroundColor: '#444',
+    padding: 5,
+    borderRadius: 5,
+  },
 });
 
 export default App;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
