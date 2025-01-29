@@ -7,7 +7,7 @@ import Header from './src/components/Header';
 import Sidebar from './src/components/Sidebar';
 import RenderHTML from 'react-native-render-html';
 import { db, COURSE_ID } from './firebaseConfig';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
 import { Icon } from 'react-native-elements';
 import SplashScreen from './src/components/splashScreen';
 import Clipboard from '@react-native-clipboard/clipboard';
@@ -40,7 +40,8 @@ const App: React.FC = () => {
 
       const chaptersQuery = query(
         collection(db, 'chapters'),
-        where('courseId', '==', courseId)
+        where('courseId', '==', courseId),
+        orderBy('index')
       );
 
       const querySnapshot = await getDocs(chaptersQuery);
@@ -131,21 +132,21 @@ const App: React.FC = () => {
                             source={{ html: chapter.content }}
                             tagsStyles={{
                               code: {
-                                backgroundColor: '#f4f4f4', // Light background for <code>
-                                color: 'black', // Text color in <code>
+                                backgroundColor: '#f4f4f4', 
+                                color: 'black',
                                 fontFamily: 'monospace',
                                 padding: 5,
                                 borderRadius: 5,
                                 fontSize: 16,
                               },
                               pre: {
-                                backgroundColor: '#000', // Black background for <pre>
-                                color: '#fff', // White text for better readability
+                                backgroundColor: '#000', 
+                                color: '#fff', 
                                 padding: 10,
                                 borderRadius: 5,
                                 fontFamily: 'monospace',
-                                fontSize: 16, // Adjust font size for better readability
-                                marginBottom: 20, // Add spacing after the code block
+                                fontSize: 12, 
+                                marginBottom: 20, 
                               },
                               h2: {
                                 fontSize: 22,
